@@ -78,6 +78,8 @@ def calc_lfc_height(
 
     # calculate the lfc, select the appropriate index & associated height
     lfc_p, lfc_t = mpcalc.lfc(pressure, temperature, dew_point_temperature, parcel_temperature_profile=parcel_profile)
+    if np.isnan(lfc_p.m):
+        return np.nan, np.nan
     lfc_idx = (pressure - lfc_p > 0).nonzero()[0][-1]
     lfc_z = height_msl[lfc_idx]
 
@@ -372,6 +374,8 @@ def calc_ecape(
 
     # calculate the level of free convection (lfc) and equilibrium level (el) indexes
     lfc_idx, _ = calc_lfc_height(pressure, height_msl, temperature, dew_point_temperature, parcel_func[cape_type])
+    if np.isnan(lfc_idx):
+        return 0 * units("J/kg")
     el_idx, el_z = calc_el_height(pressure, height_msl, temperature, dew_point_temperature, parcel_func[cape_type])
 
     # calculate the buoyancy dilution potential (ncape)
