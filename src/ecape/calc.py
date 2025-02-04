@@ -116,7 +116,10 @@ def calc_el_height(
 
     # calculate the el, select the appropriate index & associated height
     el_p, el_t = mpcalc.el(pressure, temperature, dew_point_temperature, parcel_temperature_profile=parcel_profile)
-    el_idx = (pressure - el_p > 0).nonzero()[0][-1]
+    if np.isnan(el_p.m):
+        el_idx = -1
+    else:
+        el_idx = (pressure - el_p > 0).nonzero()[0][-1]
     el_z = height_msl[el_idx]
 
     return el_idx, el_z
